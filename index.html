@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha Condomínios - App para Moradores</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a3a5c;
+            --primary-light: #2d5a8a;
+            --accent: #f5a623;
+            --accent-hover: #e6951a;
+            --text: #333;
+            --text-light: #666;
+            --bg: #ffffff;
+            --bg-alt: #f8fafc;
+            --success: #22c55e;
+            --gradient: linear-gradient(135deg, #1a3a5c 0%, #2d5a8a 100%);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 0.5rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo img {
+            height: 40px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.3; }
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content {
+            color: white;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.6s ease 0.1s both;
+        }
+
+        .hero-title span {
+            color: var(--accent);
+        }
+
+        .hero-description {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.6s ease 0.3s both;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(245, 166, 35, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .hero-phone {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            animation: fadeInRight 0.8s ease 0.4s both;
+        }
+
+        .phone-mockup {
+            position: relative;
+            width: 280px;
+            height: 580px;
+            background: #1a1a1a;
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.3);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 30px;
+            overflow: hidden;
+        }
+
+        .phone-screen img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 30px;
+            background: #1a1a1a;
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 2rem;
+            background: var(--bg);
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: rgba(26, 58, 92, 0.1);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .section-description {
+            font-size: 1.125rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            border: 1px solid #eee;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .feature-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-description {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* Screens Section */
+        .screens {
+            padding: 6rem 2rem;
+            background: var(--bg-alt);
+            overflow: hidden;
+        }
+
+        .screens-showcase {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .screen-item {
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.5s ease;
+        }
+
+        .screen-item.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .screen-phone {
+            width: 200px;
+            height: 420px;
+            background: #1a1a1a;
+            border-radius: 30px;
+            padding: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .screen-phone:hover {
+            transform: scale(1.05);
+        }
+
+        .screen-phone img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            border-radius: 24px;
+        }
+
+        .screen-label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Benefits Section */
+        .benefits {
+            padding: 6rem 2rem;
+            background: var(--bg);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .benefits-content {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.6s ease;
+        }
+
+        .benefits-content.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .benefit-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .benefit-check {
+            width: 28px;
+            height: 28px;
+            background: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+            font-size: 0.875rem;
+        }
+
+        .benefit-text h4 {
+            font-size: 1.125rem;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .benefit-text p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .benefits-image {
+            position: relative;
+            opacity: 0;
+            transform: translateX(30px);
+            transition: all 0.6s ease;
+        }
+
+        .benefits-image.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .benefits-phone {
+            width: 280px;
+            height: 580px;
+            background: #1a1a1a;
+            border-radius: 40px;
+            padding: 12px;
+            margin: 0 auto;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.2);
+        }
+
+        .benefits-phone img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            border-radius: 30px;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 4rem 2rem;
+            background: var(--gradient);
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stat-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .stat-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 6rem 2rem;
+            background: var(--bg-alt);
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .cta-description {
+            font-size: 1.125rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .store-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .store-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.875rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .store-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .store-btn svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .store-btn-text {
+            text-align: left;
+        }
+
+        .store-btn-text small {
+            font-size: 0.7rem;
+            opacity: 0.8;
+            display: block;
+        }
+
+        .store-btn-text span {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: white;
+            padding: 3rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-logo img {
+            height: 40px;
+            filter: brightness(0) invert(1);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-copyright {
+            width: 100%;
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 1rem;
+            opacity: 0.7;
+            font-size: 0.875rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 968px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero-phone {
+                order: -1;
+            }
+
+            .phone-mockup {
+                width: 220px;
+                height: 460px;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .benefits-image {
+                order: -1;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .screen-phone {
+                width: 150px;
+                height: 320px;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .cta-title {
+                font-size: 1.75rem;
+            }
+
+            .store-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <img src="logo-escuro.png" alt="Alpha Condomínios">
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#funcionalidades">Funcionalidades</a></li>
+                <li><a href="#telas">Telas</a></li>
+                <li><a href="#beneficios">Benefícios</a></li>
+                <li><a href="#download">Download</a></li>
+            </ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <span class="hero-badge">🏢 App Oficial para Moradores</span>
+                <h1 class="hero-title">Seu condomínio na <span>palma da mão</span></h1>
+                <p class="hero-description">
+                    Gerencie boletos, acompanhe a prestação de contas, faça reservas e muito mais. 
+                    Tudo em um único aplicativo, disponível para iOS e Android.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#download" class="btn btn-primary">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        Baixar Agora
+                    </a>
+                    <a href="#funcionalidades" class="btn btn-secondary">
+                        Conhecer Recursos
+                    </a>
+                </div>
+            </div>
+            <div class="hero-phone">
+                <div class="phone-mockup">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <img src="screen-home.png" alt="Tela inicial do app">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="funcionalidades">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-badge">Funcionalidades</span>
+                <h2 class="section-title">Tudo que você precisa</h2>
+                <p class="section-description">
+                    Desenvolvido para facilitar o dia a dia dos moradores com recursos completos e intuitivos.
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3 class="feature-title">Boletos</h3>
+                    <p class="feature-description">
+                        Visualize todos os seus boletos, histórico de pagamentos e status. Copie o código de barras ou gere o PIX com um toque.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Prestação de Contas</h3>
+                    <p class="feature-description">
+                        Acompanhe a saúde financeira do condomínio com gráficos de evolução de saldo, composição e inadimplência.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3 class="feature-title">Reservas</h3>
+                    <p class="feature-description">
+                        Reserve o salão de festas, churrasqueira e outros espaços diretamente pelo app com calendário interativo.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚚</div>
+                    <h3 class="feature-title">Mudanças</h3>
+                    <p class="feature-description">
+                        Agende mudanças de entrada ou saída com antecedência, evitando conflitos de horário no condomínio.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📁</div>
+                    <h3 class="feature-title">Documentos</h3>
+                    <p class="feature-description">
+                        Acesse atas de reunião, convenção, regimento interno e outros documentos importantes do condomínio.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <h3 class="feature-title">Notificações</h3>
+                    <p class="feature-description">
+                        Receba alertas de vencimento de boletos, comunicados importantes e novidades do condomínio.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screens Section -->
+    <section class="screens" id="telas">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-badge">Interface</span>
+                <h2 class="section-title">Design moderno e intuitivo</h2>
+                <p class="section-description">
+                    Navegação simples e visual limpo para uma experiência agradável.
+                </p>
+            </div>
+            <div class="screens-showcase">
+                <div class="screen-item">
+                    <div class="screen-phone">
+                        <img src="screen-home.png" alt="Tela Home">
+                    </div>
+                    <span class="screen-label">Home</span>
+                </div>
+                <div class="screen-item">
+                    <div class="screen-phone">
+                        <img src="screen-boletos.png" alt="Tela Boletos">
+                    </div>
+                    <span class="screen-label">Boletos</span>
+                </div>
+                <div class="screen-item">
+                    <div class="screen-phone">
+                        <img src="screen-prestacao.png" alt="Tela Prestação de Contas">
+                    </div>
+                    <span class="screen-label">Prestação de Contas</span>
+                </div>
+                <div class="screen-item">
+                    <div class="screen-phone">
+                        <img src="screen-servicos.png" alt="Tela Serviços">
+                    </div>
+                    <span class="screen-label">Serviços</span>
+                </div>
+                <div class="screen-item">
+                    <div class="screen-phone">
+                        <img src="screen-perfil.png" alt="Tela Perfil">
+                    </div>
+                    <span class="screen-label">Perfil</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits" id="beneficios">
+        <div class="section-container">
+            <div class="benefits-grid">
+                <div class="benefits-content">
+                    <span class="section-badge">Vantagens</span>
+                    <h2 class="section-title">Por que usar o app?</h2>
+                    <div class="benefit-item">
+                        <div class="benefit-check">✓</div>
+                        <div class="benefit-text">
+                            <h4>Acesso 24 horas</h4>
+                            <p>Consulte informações do seu condomínio a qualquer momento, de qualquer lugar.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-check">✓</div>
+                        <div class="benefit-text">
+                            <h4>Transparência total</h4>
+                            <p>Acompanhe em tempo real a situação financeira e as movimentações do condomínio.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-check">✓</div>
+                        <div class="benefit-text">
+                            <h4>Praticidade</h4>
+                            <p>Pague boletos, faça reservas e acesse documentos sem sair de casa.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-check">✓</div>
+                        <div class="benefit-text">
+                            <h4>Múltiplas unidades</h4>
+                            <p>Gerencie várias unidades em diferentes condomínios em um único app.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="benefits-image">
+                    <div class="benefits-phone">
+                        <img src="screen-prestacao.png" alt="Dashboard financeiro">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">100+</div>
+                <div class="stat-label">Condomínios</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">5.000+</div>
+                <div class="stat-label">Unidades</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Disponibilidade</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Seguro</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta" id="download">
+        <div class="cta-content">
+            <h2 class="cta-title">Baixe agora gratuitamente</h2>
+            <p class="cta-description">
+                Disponível para iOS e Android. Escaneie o QR Code ou clique nos botões abaixo.
+            </p>
+            <div class="store-buttons">
+                <a href="#" class="store-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+                    <div class="store-btn-text">
+                        <small>Baixar na</small>
+                        <span>App Store</span>
+                    </div>
+                </a>
+                <a href="#" class="store-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 010 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/></svg>
+                    <div class="store-btn-text">
+                        <small>Disponível no</small>
+                        <span>Google Play</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="logo-escuro.png" alt="Alpha Condomínios">
+            </div>
+            <div class="footer-links">
+                <a href="#">Política de Privacidade</a>
+                <a href="#">Termos de Uso</a>
+                <a href="#">Suporte</a>
+            </div>
+            <div class="footer-copyright">
+                © 2026 Alpha Condomínios. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+        }, observerOptions);
+
+        // Observe feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Observe screen items
+        document.querySelectorAll('.screen-item').forEach(item => {
+            observer.observe(item);
+        });
+
+        // Observe stat items
+        document.querySelectorAll('.stat-item').forEach(item => {
+            observer.observe(item);
+        });
+
+        // Observe benefits sections
+        document.querySelectorAll('.benefits-content, .benefits-image').forEach(item => {
+            observer.observe(item);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+
+        // Counter animation for stats
+        const animateCounter = (element, target) => {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target.toLocaleString() + (element.dataset.suffix || '');
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current).toLocaleString() + (element.dataset.suffix || '');
+                }
+            }, 30);
+        };
+    </script>
+</body>
+</html>
